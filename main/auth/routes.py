@@ -83,17 +83,21 @@ def confirm_reset_password():
 
     usuario = db.session.query(UsuarioModel).filter_by(reset_token=token).first()
 
-    if usuario and usuario.token_expiration > datetime.utcnow():
-        usuario.plain_password = new_password
-        usuario.reset_token = None  # Clear the reset token
-        usuario.token_expiration = None  # Clear the expiration
-        db.session.commit()
-        return jsonify({'message': 'Password reset successful'}), 200
+    if usuario:
+        if usuario.token_expiration > datetime.utcnow():
+            usuario.plain_password = new_password
+            usuario.reset_token = None 
+            usuario.token_expiration = None
+            try:
+                db.session.commit()
+                return jsonify({'message': 'Restablecimiento de contraseña exitoso'}), 200
+            except Exception as e:
+                db.session.rollback()
+                return jsonify({'message': 'Error al guardar la nueva contraseña'}), 500
+        else:
+            return jsonify({'message': 'Token inválido o expirado'}), 400
     else:
-        return jsonify({'message': 'Invalid or expired token'}), 400
-
-
-
+        return jsonify({'message': 'Usuario no encontrado'}), 404
 
 @auth.route('/change-password/<id>', methods=['PUT'])
 @jwt_required()

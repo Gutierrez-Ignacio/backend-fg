@@ -10,6 +10,9 @@ class Usuario(db.Model):
     password = db.Column(db.String, nullable=True)
     rol = db.Column(db.String, nullable=True, default="admin")
 
+    reset_token = db.Column(db.String, nullable=True)
+    token_expiration = db.Column(db.DateTime, nullable=True)
+
     operaciones = db.relationship("Operacion", back_populates="usuarios")
 
     @db.validates('email')

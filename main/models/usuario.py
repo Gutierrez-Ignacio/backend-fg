@@ -16,13 +16,13 @@ class Usuario(db.Model):
     def validate_email(self, key, value):
         email_pattern = re.compile(r'^[a-zA-Z0-9_\-\.~]{2,}@[a-zA-Z0-9_\-\.~]{2,}\.[a-zA-Z]{2,4}$')
         if not email_pattern.match(value):
-            raise ValueError("Invalid EMAIL format. It should be a valid email address.")
+            raise ValueError("Formato de email inválido.")
         return value
     
 
     @property
     def plain_password(self):
-        raise AttributeError('password cant be read')
+        raise AttributeError('La contraseña no se puede leer directamente.')
     
     @plain_password.setter
     def plain_password(self, password):

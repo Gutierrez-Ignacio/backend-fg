@@ -28,7 +28,7 @@ def create_app():
     import main.resources as resources
 
     api.add_resource(resources.UsuariosResource,"/usuarios")
-    api.add_resource(resources.UsuarioResource, "/usuario/<id>")
+    api.add_resource(resources.UsuarioResource, "/usuario/<int:id>")
     api.add_resource(resources.OperacionesResource,"/operaciones")
     api.add_resource(resources.OperacionResource, "/operacion/<id>")
     api.add_resource(resources.ConceptosResource,"/conceptos")

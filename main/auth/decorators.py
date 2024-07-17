@@ -3,7 +3,6 @@ from flask import jsonify, request
 from flask_jwt_extended import verify_jwt_in_request, get_jwt
 from functools import wraps
 from .. import db
-from main.models import PermisoModel
 
 def role_required(roles):
     def decorator(fn):

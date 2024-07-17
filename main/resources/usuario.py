@@ -3,19 +3,23 @@ from flask import request, jsonify
 from .. import db
 from sqlalchemy import or_, and_
 from main.models import UsuarioModel
+from main.auth.decorators import role_required
 
 class Usuario(Resource):
 
+    @role_required(roles=["admin"])
     def get(self, id):
         usuario = db.session.query(UsuarioModel).get_or_404(id)
         return usuario.to_json(), 200
 
+    @role_required(roles=["admin"])
     def delete(self,id):
         usuario = db.session.query(UsuarioModel).get_or_404(id)
         db.session.delete(usuario)
         db.session.commit()
         return {'message': 'Usuario eliminado'}, 204
-    
+
+    @role_required(roles=["admin"])
     def put(self, id):
         usuario = db.session.query(UsuarioModel).get_or_404(id)
         data = request.get_json()
@@ -63,6 +67,7 @@ class Usuarios(Resource):
             'page': usuarios.page,
         })
 
+    @role_required(roles=["admin"])
     def post(self):
         try:
             new_usuario = UsuarioModel.from_json(request.get_json())

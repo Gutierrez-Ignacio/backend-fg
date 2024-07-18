@@ -38,13 +38,12 @@ class Usuarios(Resource):
     def get(self):
         page = request.args.get('page', default=1, type=int)
         per_page = request.args.get('per_page', default=10, type=int)
+        search_term = request.args.get('search_term', default='', type=str)
 
         usuarios = db.session.query(UsuarioModel)
-
-        if request.args.get('search_term'):
-            search_term = request.args.get('search_term')
+        
+        if search_term:
             search_terms = search_term.split(' ')
-
             if len(search_terms) == 1:
                 usuarios = usuarios.filter(or_(
                     UsuarioModel.id.like(f"%{search_term}%"),

@@ -24,7 +24,7 @@ class Concepto(Resource):
         concepto = db.session.query(ConceptoModel).get_or_404(id)
         data = request.get_json()
 
-        for key, value in data:
+        for key, value in data.items():
             setattr(concepto, key, value)
 
         db.session.add(concepto)

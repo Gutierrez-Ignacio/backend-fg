@@ -23,7 +23,7 @@ class Pago(Resource):
         categoria = db.session.query(PagoModel).get_or_404(id)
         data = request.get_json()
 
-        for key, value in data:
+        for key, value in data.items():
             setattr(categoria, key, value)
 
         db.session.add(categoria)

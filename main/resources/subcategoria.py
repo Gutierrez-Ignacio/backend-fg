@@ -23,7 +23,7 @@ class Subcategoria(Resource):
         subcategoria = db.session.query(SubcategoriaModel).get_or_404(id)
         data = request.get_json()
 
-        for key, value in data:
+        for key, value in data.items():
             setattr(subcategoria, key, value)
 
         db.session.add(subcategoria)

@@ -23,7 +23,7 @@ class Categoria(Resource):
         categoria = db.session.query(CategoriaModel).get_or_404(id)
         data = request.get_json()
         
-        for key, value in data:
+        for key, value in data.items():
             setattr(categoria, key, value)
 
         db.session.add(categoria)

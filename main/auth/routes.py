@@ -11,18 +11,16 @@ import secrets
 
 auth = Blueprint('auth', __name__, url_prefix='/auth')
 
-@auth.route('/login', methods=['POST'])
+@auth.route('/login', methods=['POST']) 
 def login():
     data = request.get_json()
-    usuario = db.session.query(UsuarioModel).filter(UsuarioModel.email == data.get("email")).first_or_404()
+    usuario=db.session.query(UsuarioModel).filter(UsuarioModel.email == data.get("email")).first_or_404()
 
     if usuario.validate_pass(data.get("password")):
-        access_token = create_access_token(identity=usuario.to_json())
+        access_token = create_access_token(identity=usuario)
         return {'access_token': access_token}, 200
     else:
         return 'Contraseña incorrecta', 401
-
-
 
 @auth.route('/register', methods=['POST'])
 def register():

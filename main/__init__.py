@@ -22,6 +22,8 @@ def create_app():
     # Database configuration URL
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////'+os.getenv('DATABASE_PATH')+os.getenv('DATABASE_NAME')
     
+    app.config['UPLOAD_FOLDER'] = os.getenv('UPLOAD_FOLDER')
+
     db.init_app(app)
     
     # Import resources directory

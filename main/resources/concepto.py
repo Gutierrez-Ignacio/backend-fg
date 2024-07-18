@@ -22,7 +22,7 @@ class Concepto(Resource):
     @role_required(roles=["admin"])   
     def put(self, id):
         concepto = db.session.query(ConceptoModel).get_or_404(id)
-        data = request.get_json().items()
+        data = request.get_json()
 
         for key, value in data:
             setattr(concepto, key, value)

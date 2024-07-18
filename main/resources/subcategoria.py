@@ -21,7 +21,7 @@ class Subcategoria(Resource):
     @role_required(roles=["admin"])
     def put(self, id):
         subcategoria = db.session.query(SubcategoriaModel).get_or_404(id)
-        data = request.get_json().items()
+        data = request.get_json()
 
         for key, value in data:
             setattr(subcategoria, key, value)

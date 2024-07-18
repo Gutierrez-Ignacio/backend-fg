@@ -36,12 +36,10 @@ class Categorias(Resource):
 
         categorias_query = db.session.query(CategoriaModel)
 
-        categorias_paginadas = categorias_query.paginate(page=page, per_page=per_page, error_out=False, max_per_page=30)
-
-        categorias = [categoria.to_json() for categoria in categorias_paginadas.items]
+        categorias_paginadas = categorias_query.paginate(page=page, per_page=per_page, error_out=False, max_per_page=None)
 
         response = {
-            'categorias': categorias,
+            'categorias': [categoria.to_json() for categoria in categorias_paginadas.items],
             'total': categorias_paginadas.total,
             'pages': categorias_paginadas.pages,
             'page': categorias_paginadas.page,
@@ -51,12 +49,12 @@ class Categorias(Resource):
     @role_required(roles=["admin"])
     def post(self):
         try:
-            categorias = CategoriaModel.from_json(request.get_json())
+            new_categorias = CategoriaModel.from_json(request.get_json())
 
-            db.session.add(categorias)
+            db.session.add(new_categorias)
             db.session.commit()
 
-            return categorias.to_json(), 201
+            return new_categorias.to_json(), 201
         
         except ValueError as ve:
             return {'message': str(ve)}, 400

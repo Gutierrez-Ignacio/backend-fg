@@ -57,7 +57,7 @@ class Usuarios(Resource):
                     UsuarioModel.apellido.like(f"%{search_terms[1]}%")
                 ))
 
-        usuarios = usuarios.paginate(page=page, per_page=per_page, error_out=False, max_per_page=100)
+        usuarios = usuarios.paginate(page=page, per_page=per_page, error_out=False, max_per_page=None)
 
         return jsonify({
             'usuarios': [usuario.to_json() for usuario in usuarios.items],

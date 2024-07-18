@@ -47,7 +47,7 @@ class Conceptos(Resource):
                     ConceptoModel.nombre.like(f"%{search_term}%"), 
                 ))
 
-        conceptos = conceptos.paginate(page=page, per_page=per_page, error_out=False)
+        conceptos = conceptos.paginate(page=page, per_page=per_page, error_out=False, max_per_page=None)
 
         return jsonify({
             'conceptos': [concepto.to_json() for concepto in conceptos.items],
@@ -59,12 +59,12 @@ class Conceptos(Resource):
     @role_required(roles=["admin"])
     def post(self):
         try:
-            conceptos = ConceptoModel.from_json(request.get_json())
+            new_conceptos = ConceptoModel.from_json(request.get_json())
 
-            db.session.add(conceptos)
+            db.session.add(new_conceptos)
             db.session.commit()
 
-            return conceptos.to_json(), 201
+            return new_conceptos.to_json(), 201
         
         except ValueError as ve:
             return {'message': str(ve)}, 400

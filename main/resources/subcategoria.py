@@ -35,16 +35,17 @@ class Subcategorias(Resource):
         page = request.args.get('page', default=1, type=int)
         per_page = request.args.get('per_page', default=10, type=int)
 
-        subcategorias = db.session.query(SubcategoriaModel)
+        subcategorias_query = db.session.query(SubcategoriaModel)
 
-        subcategorias_paginadas = subcategorias.paginate(page=page, per_page=per_page, error_out=False, max_per_page=None)
+        subcategorias_paginadas = subcategorias_query.paginate(page=page, per_page=per_page, error_out=False)
 
-        return jsonify({
+        response = {
             'subcategorias': [subcategoria.to_json() for subcategoria in subcategorias_paginadas.items],
-            'total' : subcategorias.total,           
-            'pages' : subcategorias.pages,  
-            'page' : subcategorias.page,  
-        })
+            'total': subcategorias_paginadas.total,
+            'pages': subcategorias_paginadas.pages,
+            'page': subcategorias_paginadas.page,
+        }
+        return jsonify(response)
 
     @role_required(roles=["admin"])
     def post(self):

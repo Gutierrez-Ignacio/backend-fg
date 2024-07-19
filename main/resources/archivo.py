@@ -19,7 +19,7 @@ class Archivo(Resource):
             'archivo_url': archivo.archivo_url,
             'dato_1': archivo.dato_1,
             'dato_2': archivo.dato_2,
-            'id_subcategoria': archivo.id_subcategoria,
+            'id_subcategorias': archivo.id_subcategorias,
             'fecha_inicio': archivo.fecha_inicio,
             'fecha_fin': archivo.fecha_fin
         }), 200
@@ -87,7 +87,7 @@ class Archivos(Resource):
                 archivo_tipo=archivo.content_type,
                 dato_1=request.form.get('dato_1'),
                 dato_2=request.form.get('dato_2'),
-                id_subcategoria=request.form.get('id_subcategoria'),
+                id_subcategorias=request.form.get('id_subcategorias'),
                 fecha_inicio=request.form.get('fecha_inicio'),
                 fecha_fin=request.form.get('fecha_fin')
             )

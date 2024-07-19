@@ -4,7 +4,7 @@ import re
 class Archivo(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 
-    id_subcategorias = db.Column(db.Integer, db.ForeignKey("subcategoria.id"), nullable=False) 
+    id_subcategorias = db.Column(db.Integer, db.ForeignKey("subcategoria.id"), nullable=False)
     subcategorias = db.relationship("Subcategoria", back_populates="archivos", uselist=False, single_parent=True)
 
     archivo_path = db.Column(db.String(255), nullable=True)
@@ -30,7 +30,7 @@ class Archivo(db.Model):
 
     def __repr__(self):
         return '<Archivo: %r %r %r %r %r %r %r>' % (
-            self.id, self.archivo, self.id_subcategoria,
+            self.id, self.archivo_path, self.id_subcategorias,
             self.dato_1, self.dato_2, self.fecha_inicio, self.fecha_fin
         )
 
@@ -39,7 +39,7 @@ class Archivo(db.Model):
             'id': self.id,
             'archivo_path': self.archivo_path,
             'archivo_tipo': self.archivo_tipo,
-            'id_subcategoria': self.id_subcategoria,
+            'id_subcategorias': self.id_subcategorias,
             'dato_1': self.dato_1,
             'dato_2': self.dato_2,
             'fecha_inicio': self.fecha_inicio,
@@ -52,7 +52,7 @@ class Archivo(db.Model):
         id = archivo_json.get('id')
         archivo_path = archivo_json.get('archivo_path')
         archivo_tipo = archivo_json.get('archivo_tipo')
-        id_subcategoria = archivo_json.get('id_subcategoria')
+        id_subcategorias = archivo_json.get('id_subcategorias')
         dato_1 = archivo_json.get('dato_1')
         dato_2 = archivo_json.get('dato_2')
         fecha_inicio = archivo_json.get('fecha_inicio')
@@ -61,7 +61,7 @@ class Archivo(db.Model):
             id=id,
             archivo_path=archivo_path,
             archivo_tipo=archivo_tipo,
-            id_subcategoria=id_subcategoria,
+            id_subcategorias=id_subcategorias,
             dato_1=dato_1,
             dato_2=dato_2,
             fecha_inicio=fecha_inicio,

@@ -13,16 +13,7 @@ class Archivo(Resource):
     @role_required(roles=["admin"])
     def get(self, id):
         archivo = db.session.query(ArchivoModel).get_or_404(id)
-        return jsonify({
-            'id': archivo.id,
-            'archivo_nombre': archivo.archivo_nombre,
-            'archivo_url': archivo.archivo_url,
-            'dato_1': archivo.dato_1,
-            'dato_2': archivo.dato_2,
-            'id_subcategorias': archivo.id_subcategorias,
-            'fecha_inicio': archivo.fecha_inicio,
-            'fecha_fin': archivo.fecha_fin
-        }), 200
+        return archivo.to_json(), 200
 
     @role_required(roles=["admin"])
     def delete(self, id):

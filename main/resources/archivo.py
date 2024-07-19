@@ -25,7 +25,7 @@ class Archivo(Resource):
         }), 200
 
     @role_required(roles=["admin"])
-    def delete(self,id):
+    def delete(self, id):
         archivo  = db.session.query(ArchivoModel).get_or_404(id)
         db.session.delete(archivo)
         db.session.commit()
@@ -54,9 +54,9 @@ class Archivos(Resource):
 
         return jsonify({
             'archivos': [archivo.to_json() for archivo in archivos_paginados.items],
-            'total' : archivos.total,           
-            'pages' : archivos.pages,  
-            'page' : archivos.page,  
+            'total': archivos_paginados.total,
+            'pages': archivos_paginados.pages,
+            'page': archivos_paginados.page,
         })
 
     @role_required(roles=["admin"])

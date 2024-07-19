@@ -46,6 +46,7 @@ class Subcategorias(Resource):
             'page' : subcategorias.page,  
         })
 
+    @role_required(roles=["admin"])
     def post(self):
         try:
             new_subcategorias = SubcategoriaModel.from_json(request.get_json())

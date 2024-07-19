@@ -22,17 +22,50 @@ class Operacion(Resource):
         db.session.commit()
         return {'message': 'Operacion eliminada'}, 204
     
+
     @role_required(roles=["admin"])
     def put(self, id):
-        operacion = db.session.query(OperacionModel).get_or_404(id)
-        data = request.get_json()
+        try:
+            # Fetch the operation record or return a 404 error if not found
+            operacion = db.session.query(OperacionModel).get_or_404(id)
+            
+            # Update fields from the JSON data
+            data = request.form.to_dict()  # Use request.form for handling form data
+            for key, value in data.items():
+                setattr(operacion, key, value)
+            
+            # Handle file uploads if they exist in the request
+            files = {
+                'comprobante': 'comprobante_path',
+                'imagen1': 'imagen1_path',
+                'imagen2': 'imagen2_path',
+                'imagen3': 'imagen3_path'
+            }
 
-        for key, value in data.items():
-            setattr(operacion, key, value)
-
-        db.session.add(operacion)
-        db.session.commit()
-        return operacion.to_json(), 200
+            for file_key, path_key in files.items():
+                if file_key in request.files:
+                    file = request.files[file_key]
+                    
+                    # Generate a unique filename and save the file
+                    filename = str(uuid.uuid4()) + '_' + secure_filename(file.filename)
+                    file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+                    
+                    if not os.path.exists(current_app.config['UPLOAD_FOLDER']):
+                        os.makedirs(current_app.config['UPLOAD_FOLDER'])
+                    
+                    file.save(file_path)
+                    
+                    # Update the file path and type in the model
+                    setattr(operacion, path_key, file_path)
+                    setattr(operacion, f"{file_key}_tipo", file.content_type)
+            
+            # Commit the changes to the database
+            db.session.commit()
+            return operacion.to_json(), 200
+        
+        except Exception as e:
+            db.session.rollback()
+            return {'message': 'Error updating the operation', 'error': str(e)}, 500
     
 class Operaciones(Resource):
     def get(self):

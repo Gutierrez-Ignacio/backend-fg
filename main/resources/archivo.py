@@ -24,15 +24,48 @@ class Archivo(Resource):
 
     @role_required(roles=["admin"])
     def put(self, id):
-        archivo = db.session.query(ArchivoModel).get_or_404(id)
-        data = request.get_json()
+        try:
+            # Retrieve the existing file record from the database
+            archivo = ArchivoModel.query.get(id)
+            if archivo is None:
+                return {'message': 'Archivo no encontrado'}, 404
+            
+            # Check if a new file is uploaded
+            if 'file' in request.files:
+                new_file = request.files['file']
+                if new_file.filename != '':
+                    # Generate a unique filename for the new file
+                    filename = str(uuid.uuid4()) + '_' + secure_filename(new_file.filename)
+                    
+                    # Save the new file to the specified directory
+                    upload_dir = os.path.join(current_app.config['UPLOAD_FOLDER'])
+                    if not os.path.exists(upload_dir):
+                        os.makedirs(upload_dir)
+                    
+                    file_path = os.path.join(upload_dir, filename)
+                    new_file.save(file_path)
+                    
+                    # Update the file path and type in the database
+                    archivo.archivo_path = file_path
+                    archivo.archivo_tipo = new_file.content_type
 
-        for key, value in data.items():
-            setattr(archivo, key, value)
+            # Update other fields of the file record
+            archivo.dato_1 = request.form.get('dato_1', archivo.dato_1)
+            archivo.dato_2 = request.form.get('dato_2', archivo.dato_2)
+            archivo.id_subcategorias = request.form.get('id_subcategorias', archivo.id_subcategorias)
+            archivo.fecha_inicio = request.form.get('fecha_inicio', archivo.fecha_inicio)
+            archivo.fecha_fin = request.form.get('fecha_fin', archivo.fecha_fin)
 
-        db.session.add(archivo)
-        db.session.commit()
-        return archivo.to_json(), 200
+            # Commit the changes to the database
+            db.session.commit()
+
+            # Return the updated file record in JSON format with status code 200 (OK)
+            return archivo.to_json(), 200
+
+        except Exception as e:
+            # Rollback the session in case of an error
+            db.session.rollback()
+            return {'message': 'Error al actualizar el archivo', 'error': str(e)}, 500
 
 class Archivos(Resource):
     def get(self):

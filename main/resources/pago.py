@@ -35,15 +35,15 @@ class Pagos(Resource):
         page = request.args.get('page', default=1, type=int)
         per_page = request.args.get('per_page', default=10, type=int)
 
-        pagos = db.session.query(PagoModel)
+        pagos_query = db.session.query(PagoModel)
 
-        pagos_paginados = pagos.paginate(page=page, per_page=per_page, error_out=False, max_per_page=None)
+        pagos_paginados = pagos_query.paginate(page=page, per_page=per_page, error_out=False, max_per_page=None)
 
         return jsonify({
             'pagos': [pago.to_json() for pago in pagos_paginados.items],
-            'total' : pagos.total,           
-            'pages' : pagos.pages,  
-            'page' : pagos.page,  
+            'total' : pagos_paginados.total,           
+            'pages' : pagos_paginados.pages,  
+            'page' : pagos_paginados.page,  
         })
 
     @role_required(roles=["admin"])

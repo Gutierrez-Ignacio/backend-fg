@@ -23,8 +23,9 @@ def user_identity_lookup(usuario):
 @jwt.additional_claims_loader
 def add_claims_to_access_token(usuario):
     claims = {
-        'rol': usuario.rol,
         'id': usuario.id,
+        'nombre': usuario.nombre,
+        'apellido': usuario.apellido,
         'email': usuario.email
     }
     return claims
